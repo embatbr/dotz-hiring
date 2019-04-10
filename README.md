@@ -5,22 +5,29 @@
 
 ## Architecture
 
-The ideal architecture using [GCP](https://cloud.google.com/) is to have the raw data (the CSV files provided) stored in Cloud Storage (data lake), process it (clean and transform into a more suitable format - if needed) using Cloud Dataflow, store the processed files (may have more than 3) in Cloud Storage again and use BigQuery to explore and extract reports.
+The GCP project ID is **dotz-hiring**.
 
-Althought this is the best strategy, the development must be executed in intermediary stages. Before using the cloud, it is necessary to test the logic. Due to this choice, the architecture will be provided in incremental stages
+### Data Lake
 
-### Stage 1: Complete local environment
+The data lake is a bucket in GCP Storage. This bucket is divided in sections **raw**, for the datasets provided, and **processed** for ETL results.
 
-The local environment is composed of
+### Logic
 
-- Data Lake: a directory in the repository's root named **storage**, with the following subdirectories: **raw** and **processed**. This represents the data lake;
-- Logic: the logic ought to be executed in Cloud Dataflow. To represent it in this early development stage, the directory named **dataflow** will contain the Python files (the logic must be modular);
-- DW: a local PostgreSQL will be used as data warehouse. This will be replaced by BigQuery (or other GCP suitable tool).
+GCP Dataflow is used to execute the logic, that is basically read the raw data, process it (distributing in proper table-base files) and store in the data lake (section **processed**).
 
-The ETL, roughly, is:
+Besides Dataflow, GCP App Engine is used to manage the entire ETL. After the Dataflow stage, the processed data is consolidated into GCP BigQuery.
 
-1. Data stored in data lake's **raw** section is read by Dataflow;
-2. Dataflow processed the data;
-3. The data is stored in the data lake again, although this time in the **processed** section;
-4. Data is uploaded to the DW;
-5. Reports are generated.
+### DW
+
+A data warehouse with BigQuery, used only after the ETL ends and to create reports.
+
+
+## Development flow
+
+### 1. Setting the data lake
+
+1. Created a bucket named **dotz-hiring-datalake**. This is the data lake;
+2. Uploaded the [provided files](./storage/raw):
+    - Command: `gsutil cp -r ./storage/raw gs://dotz-hiring-datalake/raw`;
+    - Files located [here](https://console.cloud.google.com/storage/browser/dotz-hiring-datalake/raw);
+    - Viewers with permission to read objects.
