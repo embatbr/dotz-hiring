@@ -41,7 +41,17 @@ The raw files contain 3 types of data (already given with it's proper tables):
 
 These files are each one related to a table. The most basic one is **components**. It's records are referenced in **materials**, and these are referenced in table **pricing**.
 
-Tables schemas are defined in directory *schemas*. The tables are defined initially in a SQL for a PostgreSQL-like database. This step is intended to give me a better perspective. After that, when the Dataflow logic is completed, the BigQuery tables will be defined.
+Tables schemas are defined in directory *schemas*. To load a table schema file:
+
+```bash
+gsutil cp schemas/[tablename].json gs://dotz-hiring-datalake/schemas/[tablename].json
+```
+
+To create a table:
+
+```bash
+bq load --source_format=NEWLINE_DELIMITED_JSON dotz-hiring:tubulation.[tablename] [tabledata] [tableschema]
+```
 
 ### 3. Writing ETL
 

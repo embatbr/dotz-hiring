@@ -1,0 +1,77 @@
+[
+    {
+        "name": "component_id",
+        "type": "STRING",
+        "mode": "REQUIRED"
+    },
+    {
+        "name": "component_type_id",
+        "type": "STRING",
+        "mode": "REQUIRED"
+    },
+    {
+        "name": "type",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "connection_type_id",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "outside_shape",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "base_type",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "height_over_tube",
+        "type": "FLOAT",
+        "mode": "REQUIRED"
+    },
+    {
+        "name": "bolt_pattern_long",
+        "type": "FLOAT",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "bolt_pattern_wide",
+        "type": "FLOAT",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "groove",
+        "type": "BOOLEAN",
+        "mode": "REQUIRED"
+    },
+    {
+        "name": "base_diameter",
+        "type": "FLOAT",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "shoulder_diameter",
+        "type": "FLOAT",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "unique_feature",
+        "type": "BOOLEAN",
+        "mode": "REQUIRED"
+    },
+    {
+        "name": "orientation",
+        "type": "BOOLEAN",
+        "mode": "REQUIRED"
+    },
+    {
+        "name": "weight",
+        "type": "FLOAT",
+        "mode": "NULLABLE"
+    }
+]
