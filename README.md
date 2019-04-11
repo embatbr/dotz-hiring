@@ -61,20 +61,9 @@ $ bq mk --table dotz-hiring:tubulation.pricing schemas/pricing.json
 
 The ETL is written in Python 2.7 and executed in Cloud Dataflow.
 
-I created a service account named **master** with role owner and created a key. After downloading the credentials file, an environment variable **GOOGLE_APPLICATION_CREDENTIALS** containing the credentials filepath is exported.
+I created a service account named **master** with role owner and created a key. After downloading the credentials file, an environment variable **GOOGLE_APPLICATION_CREDENTIALS** containing the credentials filepath is exported and the job is submitted:
 
 ```bash
 $ export GOOGLE_APPLICATION_CREDENTIALS=credentials/dotz-hiring-a64a44a8ad2b.json
-```
-
-and the job is submitted:
-
-```bash
-$ GOOGLE_APPLICATION_CREDENTIALS=credentials/dotz-hiring-a64a44a8ad2b.json \
-python -m apache_beam.examples.wordcount \
-    --input gs://dotz-hiring-datalake/raw/comp_boss.csv \
-    --output gs://dotz-hiring-datalake/processed/components \
-    --runner DataflowRunner \
-    --project dotz-hiring \
-    --temp_location gs://dotz-hiring-datalake/tmp/
+$ python dataflow/main.py
 ```
