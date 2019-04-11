@@ -22,20 +22,25 @@ def discover(filepath):
 
             if field not in possible_schema:
                 possible_schema[field] = {
-                    'values': set(value),
+                    'values_min_length': len(value),
+                    'values_max_length': len(value),
                     'nullable': value == 'NA'
                 }
             else:
-                possible_schema[field]['values'].add(value)
+                len_value = len(value)
+
+                possible_schema[field]['values_min_length'] = min(possible_schema[field]['values_min_length'], len_value)
+                possible_schema[field]['values_max_length'] = min(possible_schema[field]['values_max_length'], len_value)
                 possible_schema[field]['nullable'] = possible_schema[field]['nullable'] or (value == 'NA')
 
     for field in header:
         print(field)
         print('nullable:', possible_schema[field]['nullable'])
-        print('values:', possible_schema[field]['values'])
+        print('values_min_length:', possible_schema[field]['values_min_length'])
+        print('values_max_length:', possible_schema[field]['values_max_length'])
         print()
 
 
 if __name__ == '__main__':
-    filename = 'comp_boss'
+    filename = 'price_quote'
     discover('/home/embat/workspace/Personal/dotz-hiring/storage/raw/{}.csv'.format(filename))

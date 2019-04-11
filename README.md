@@ -15,8 +15,6 @@ The data lake is a bucket in GCP Storage. This bucket is divided in sections **r
 
 GCP Dataflow is used to execute the logic, that is basically read the raw data, process it (distributing in proper table-based files) and store in the data lake (section **processed**).
 
-Besides Dataflow, GCP App Engine is used to manage the entire ETL. After the Dataflow stage, the processed data is consolidated into GCP BigQuery.
-
 ### DW
 
 A data warehouse with BigQuery, used only after the ETL ends and to create reports.
@@ -31,6 +29,7 @@ A data warehouse with BigQuery, used only after the ETL ends and to create repor
     - Command: `gsutil cp -r ./storage/raw gs://dotz-hiring-datalake/raw`;
     - Files located [here](https://console.cloud.google.com/storage/browser/dotz-hiring-datalake/raw).
 
+
 ### 2. Modeling the objects
 
 The raw files contain 3 types of data (already given with it's proper tables):
@@ -44,17 +43,38 @@ These files are each one related to a table. The most basic one is **components*
 Tables schemas are defined in directory *schemas*. To load a table schema file:
 
 ```bash
-gsutil cp schemas/[tablename].json gs://dotz-hiring-datalake/schemas/[tablename].json
+$ gsutil cp schemas/components.json gs://dotz-hiring-datalake/schemas/components.json
+$ gsutil cp schemas/materials.json gs://dotz-hiring-datalake/schemas/materials.json
+$ gsutil cp schemas/pricing.json gs://dotz-hiring-datalake/schemas/pricing.json
 ```
 
-To create a table:
+To create the tables:
 
 ```bash
-bq load --source_format=NEWLINE_DELIMITED_JSON dotz-hiring:tubulation.[tablename] [tabledata] [tableschema]
+$ bq mk --table dotz-hiring:tubulation.components schemas/components.json
+$ bq mk --table dotz-hiring:tubulation.materials schemas/materials.json
+$ bq mk --table dotz-hiring:tubulation.pricing schemas/pricing.json
 ```
+
 
 ### 3. Writing ETL
 
-The ideal ETL for this challenge is to have a cron job running (Cloud Scheduler API, maybe) and starting the Dataflow script to execute all the logic. After that, the job uploads the clean data to BigQuery.
+The ETL is written in Python 2.7 and executed in Cloud Dataflow.
 
-Initially it will be written only with Dataflow, and the cron job will be added after, if needed.
+I created a service account named **master** with role owner and created a key. After downloading the credentials file, an environment variable **GOOGLE_APPLICATION_CREDENTIALS** containing the credentials filepath is exported.
+
+```bash
+$ export GOOGLE_APPLICATION_CREDENTIALS=credentials/dotz-hiring-a64a44a8ad2b.json
+```
+
+and the job is submitted:
+
+```bash
+$ GOOGLE_APPLICATION_CREDENTIALS=credentials/dotz-hiring-a64a44a8ad2b.json \
+python -m apache_beam.examples.wordcount \
+    --input gs://dotz-hiring-datalake/raw/comp_boss.csv \
+    --output gs://dotz-hiring-datalake/processed/components \
+    --runner DataflowRunner \
+    --project dotz-hiring \
+    --temp_location gs://dotz-hiring-datalake/tmp/
+```
