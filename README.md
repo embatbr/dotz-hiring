@@ -20,6 +20,16 @@ GCP Dataflow is used to execute the logic, that is basically read the raw data, 
 A data warehouse with BigQuery, used only after the ETL ends and to create reports.
 
 
+## Installing
+
+Create a virtual environment and install the package for Apache Beam:
+
+```bash
+$ mkvirtualenv --python=$(which python2) dotz-hiring
+$ pip install apache-beam[gcp]
+```
+
+
 ## Development flow
 
 ### 1. Setting the data lake
