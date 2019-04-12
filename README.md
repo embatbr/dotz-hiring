@@ -48,17 +48,9 @@ The raw files contain 3 types of data (already given with it's proper tables):
 - materials (bill_of_materials): each row is a set of tubes (you may use a simple tube, conected with a should at one end and a "ternary" shoulder at other end);
 - pricing (price_quote): prices quoted in relation to the amount required, the date and etc.
 
-These files are each one related to a table. The most basic one is **components**. It's records are referenced in **materials**, and these are referenced in table **pricing**.
+These files are each one related to an external table. The most basic one is **components**. It's records are referenced in **materials**, and these are referenced in table **pricing**.
 
-Tables schemas are defined in directory *schemas*. To load a table schema file:
-
-```bash
-$ gsutil cp schemas/components.json gs://dotz-hiring-datalake/schemas/components.json
-$ gsutil cp schemas/materials.json gs://dotz-hiring-datalake/schemas/materials.json
-$ gsutil cp schemas/pricing.json gs://dotz-hiring-datalake/schemas/pricing.json
-```
-
-To create the tables:
+Tables schemas are defined in directory *schemas*. To create the tables:
 
 ```bash
 $ bq mk --table dotz-hiring:tubulation.components schemas/components.json
@@ -75,5 +67,7 @@ I created a service account named **master** with role owner and created a key. 
 
 ```bash
 $ export GOOGLE_APPLICATION_CREDENTIALS=credentials/dotz-hiring-a64a44a8ad2b.json
-$ python dataflow/main.py
+$ python dataflow.py --process (components|materials|pricing)
 ```
+
+The ETL **extracts** data from CSV files, **transforms** it and **loads** to Cloud Storage and Cloud BigQuery.
