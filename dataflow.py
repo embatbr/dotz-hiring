@@ -62,7 +62,7 @@ def get_schema(name):
         if _type == 'BOOLEAN':
             return lambda x: x.lower() == 'yes'
         if _type == 'DATE':
-            return lambda x: dt.strptime(x, '%Y-%m-%d').strftime(x, '%Y-%m-%d')
+            return lambda x: dt.strptime(x, '%Y-%m-%d').strftime('%Y-%m-%d')
 
     with open('schemas/{}.json'.format(name)) as f:
         bq_schema = json.load(f)
@@ -145,10 +145,6 @@ def run_pipeline(source, target):
 
         filtered_proc_objs | WriteToBigQuery(
             'dotz-hiring:tubulation.{}'.format(target),
-            # schema={
-            #     'fields': bq_schema
-            # },
-            # schema=bq_schema,
             write_disposition=BigQueryDisposition.WRITE_TRUNCATE,
             create_disposition=BigQueryDisposition.CREATE_NEVER
         )
